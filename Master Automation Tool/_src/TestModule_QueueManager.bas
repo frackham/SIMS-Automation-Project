@@ -1,4 +1,5 @@
 Attribute VB_Name = "TestModule_QueueManager"
+
 Option Explicit
 Option Private Module
 
@@ -52,5 +53,7 @@ TestExit:
 TestFail:
     Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
 End Sub
+
+
 
 

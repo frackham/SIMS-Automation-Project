@@ -1,9 +1,7 @@
 Attribute VB_Name = "DebugHelpers"
+
 Option Explicit
 'None of the functions here should be run by code - only manually. They are to support development.
-
-
-
 
 Private Sub UnhideAllSheets()
     Dim ws As Worksheet
@@ -56,3 +54,4 @@ Private Sub CheckChartObjectsNames()
         MsgBox (n & "  |  Name:" & co.Name & "   |  ParentName:" & co.Parent.Name)
     Next co
 End Sub
+

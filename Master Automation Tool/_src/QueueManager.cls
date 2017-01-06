@@ -7,6 +7,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
+
 Option Explicit
 'QueueManager
 Private thisCMD As CommandLineHandler
@@ -131,3 +132,8 @@ Sub Setup(CMD As CommandLineHandler, sys As FraSys)
     thisCMD = CMD
     thissys = sys
 End Sub
+
+
+
+
+

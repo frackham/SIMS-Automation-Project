@@ -1,20 +1,4 @@
 Attribute VB_Name = "Module2"
-Sub Per_cent_col()
-
-'   Adds extra column to Report2. Calculates % absence, assuming 150 sessions
-
-    Sheets("Report2").Select
-    Range("P1").Select
-    ActiveCell.FormulaR1C1 = "%"
-    Range("P2").Select
-    ActiveCell.FormulaR1C1 = "=IFERROR((150-RC[-1])/150,"""")"
-    Range("P2").Select
-    Selection.AutoFill Destination:=Range("P2:P10000")
-    Range("P2:P10000").Select
-    Columns("P:P").Select
-    Selection.Style = "Percent"
-    
-End Sub
 
 Sub Absence_per_cent()
 
@@ -64,6 +48,9 @@ Dim r As Long
     End With
 
 End Sub
+
+
+
 
 
 

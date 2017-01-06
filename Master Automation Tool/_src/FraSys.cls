@@ -7,6 +7,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
+
 Option Explicit
 'Class FraSys.
 'Horrific personal name for a 'system' class, but at least it's memorable for me.
@@ -26,6 +27,7 @@ Dim str_mailerfrom As String
 Dim str_mailerto As String
 Dim str_mailersmtp As String
 
+Dim bool_debugmode As Boolean
 
 
 
@@ -74,6 +76,8 @@ Public Sub InitialiseSystemConfig()
     str_server = "" 'Correctly blank.
     str_database = "" 'Correctly blank.
     
+    bool_debugmode = DEBUG_MODE 'TODO: Yuk. Check this.
+    
     bIS_INITIALISED = True
 End Sub
 
@@ -113,3 +117,8 @@ End Function
 'Function MAIL_FROM() As String
 '    MAIL_FROM = str_emailpath
 'End Function
+
+
+Function DEBUG_MODE() As Boolean
+    DEBUG_MODE = bool_debugmode
+End Function

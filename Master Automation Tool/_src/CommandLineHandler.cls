@@ -7,6 +7,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
+
 Option Explicit
 'Class CommandLineHandler.
 Dim TaskID As Long
@@ -124,3 +125,5 @@ Sub Initialise_WithSystemRef(sys As FraSys)
     Set thisSystem = sys
     TESTMODE = False
 End Sub
+
+
