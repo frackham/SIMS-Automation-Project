@@ -28,8 +28,6 @@ Public Function CheckWhetherToImportSRCModules() As Boolean
                 'Do nothing.
         End Select
     Next f
-    
-    
     Set FSO = Nothing
 End Function
 
@@ -102,6 +100,7 @@ End Sub
 
 
 Public Sub ImportModules()
+    'Modified from original to import into this current workbook.
     Dim wkbTarget As Excel.Workbook
     Dim objFSO As Scripting.FileSystemObject
     Dim objFile As Scripting.File
