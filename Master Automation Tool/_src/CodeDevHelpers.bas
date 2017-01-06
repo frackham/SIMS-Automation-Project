@@ -3,6 +3,35 @@ Option Explicit
 'See http://www.cpearson.com/excel/vbe.aspx on programmatic access to VBE object model.
 
 
+'TODO: Move SRC folder location and logs folder location to Config on the system object.
+
+Public Function CheckWhetherToImportSRCModules() As Boolean
+    Dim FSO As Scripting.FileSystemObject, f As File, fo As Folder
+    Dim dFileUpdated As Date, dThisWorkbookUpdated As Date
+    If FSO Is Nothing Then
+        Set FSO = New FileSystemObject
+    End If
+
+    dThisWorkbookUpdated = TimeStampThisLastModified()
+
+    'for each .bas or .cls in SRC folder.
+    Set fo = FSO.GetFolder(ThisWorkbook.path & "\" & "_src") 'TODO: Replace with path variable.
+    For Each f In fo.Files
+        Select Case UCase(Trim(Replace(Right(f.ShortName, 4), ".", "")))
+            Case "CLS", "BAS"
+                dFileUpdated = f.DateLastModified
+                If GetIsCheckDateBeforeDate(dThisWorkbookUpdated, dFileUpdated) Then 'if this file has been updated since the workbook, update the modules.
+                    CheckWhetherToImportSRCModules = True
+                    Exit For
+                End If
+            Case Else
+                'Do nothing.
+        End Select
+    Next f
+    
+    
+    Set FSO = Nothing
+End Function
 
 'See http://www.rondebruin.nl/win/s9/win002.htm for the functions below.
 Public Sub ExportModules()
