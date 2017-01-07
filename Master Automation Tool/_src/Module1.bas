@@ -57,8 +57,8 @@ Sub auto_open(Optional bRanFromFirstOpen As Boolean = True)
     
 '   Skips rest of procedure if this is not Dashboard file (ie is Output file)
     If Not ActiveWorkbook.Name = MASTER_WORKBOOK_NAME Then
-        Sheets("Drilldown").Activate
-        Sheets("Dashboard").Activate
+        'Sheets("Drilldown").Activate
+        'Sheets("Dashboard").Activate
         Exit Sub
     End If
         
@@ -813,8 +813,3 @@ End Sub
 '        End If
 '
 'End Sub
-
-
-
-
-

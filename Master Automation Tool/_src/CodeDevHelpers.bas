@@ -22,6 +22,7 @@ Public Function CheckWhetherToImportSRCModules() As Boolean
                 dFileUpdated = f.DateLastModified
                 If GetIsCheckDateBeforeDate(dThisWorkbookUpdated, dFileUpdated) Then 'if this file has been updated since the workbook, update the modules.
                     CheckWhetherToImportSRCModules = True
+                    Call WriteLineToSystemLog("CheckWhetherToImportSRCModules", "-", "True, importing")
                     Exit For
                 End If
             Case Else
@@ -29,6 +30,11 @@ Public Function CheckWhetherToImportSRCModules() As Boolean
         End Select
     Next f
     Set fso = Nothing
+    If CheckWhetherToImportSRCModules Then
+        Call WriteLineToSystemLog("CheckWhetherToImportSRCModules", "-", "True, import ended")
+    Else
+        Call WriteLineToSystemLog("CheckWhetherToImportSRCModules", "-", "False, no import made.")
+    End If
 End Function
 
 'See http://www.rondebruin.nl/win/s9/win002.htm for the functions below.
@@ -39,6 +45,7 @@ Public Sub ExportModules()
     Dim szExportPath As String
     Dim szFileName As String
     Dim cmpComponent As VBIDE.VBComponent
+    Dim n As Integer
 
     ''' The code modules will be exported in a folder named.
     ''' VBAProjectFiles in the Documents folder.
@@ -64,7 +71,7 @@ Public Sub ExportModules()
     End If
     
     szExportPath = FolderWithVBAProjectFiles & "\"
-    
+    n = 0
     For Each cmpComponent In wkbSource.VBProject.VBComponents
         
         bExport = True
@@ -86,6 +93,7 @@ Public Sub ExportModules()
         
         If bExport Then
             ''' Export the component to a text file.
+            n = n + 1
             cmpComponent.Export szExportPath & szFileName
             'Note that codedevhelpers module (this module) *is* exported each time even though it is not imported.
             
@@ -97,6 +105,7 @@ Public Sub ExportModules()
     Next cmpComponent
 
     If DEBUG_MODE Then MsgBox "Export is ready"
+    Call WriteLineToSystemLog("ExportModules", "-", CStr(n) & " files exported to " & FolderWithVBAProjectFiles & " .")
 End Sub
 
 Public Sub ImportModules()
@@ -167,19 +176,22 @@ End Sub
 Private Sub UpdateCodeInModule(cmpComponents As VBComponents, sImportFilePath As String)
     Dim fso As Scripting.FileSystemObject, f As File, fo As Folder, cmpModule As VBComponent
     Dim dFileUpdated As Date, dThisWorkbookUpdated As Date, sExtension As String, sThisFileName As String, bModuleExists As Boolean, sThisModuleName As String
-    Dim sCode As String
+    Dim sCode As String, sStatus As String
     If fso Is Nothing Then
         Set fso = New FileSystemObject
     End If
 
     dThisWorkbookUpdated = TimeStampThisLastModified()
 
+    On Error GoTo Failed
+    sStatus = "(1) - Pre update code loop for " & sImportFilePath & " ."
     'for each .bas or .cls in SRC folder.
     Set fo = fso.GetFolder(ThisWorkbook.path & "\" & "_src") 'TODO: Replace with path variable.
     For Each f In fo.Files
         sExtension = UCase(Trim(Replace(Right(f.Name, 4), ".", "")))
         Select Case sExtension
             Case "CLS", "BAS"
+                sStatus = "(2) - Found extension for " & sImportFilePath & " ."
                 sThisFileName = Replace(UCase(f.Name), sExtension, "")
                 sThisFileName = Replace(sThisFileName, ".", "")
                 'get if the module already exists. If so, replace the text (starting from option explicit).
@@ -199,18 +211,24 @@ Private Sub UpdateCodeInModule(cmpComponents As VBComponents, sImportFilePath As
                         
                     End If
                 Next cmpModule
+                sStatus = "(3) - Finished loop and found = " & CStr(bModuleExists) & " for " & sImportFilePath & " ."
     
                 If bModuleExists Then
                     If sThisModuleName = "CODEDEVHELPERS" Then
                         'Skip for now. Don't want to import into this module.
+                        sStatus = "(4) - Identified as code export/import module at " & sImportFilePath & " ."
                     Else
                         sCode = GetCodeFromFile_BASorCLS(f.path)
-                        If Len(sCode) > 0 Then cmpModule.CodeModule.DeleteLines 1, cmpModule.CodeModule.CountOfLines 'Don't remove unless got something to add in!
-                        cmpModule.CodeModule.AddFromString (sCode)
+                        If Len(sCode) > 0 Then
+                            cmpModule.CodeModule.DeleteLines 1, cmpModule.CodeModule.CountOfLines 'Don't remove unless got something to add in!
+                            cmpModule.CodeModule.AddFromString (sCode)
+                            Call WriteLineToSystemLog("UpdateCodeInModule", "Module:= " & cmpModule.Name & ". Deleted code and updated module from file", "-")
+                        End If
                     End If
                 ElseIf bModuleExists = False Then
                     'if it doesn't exist, import
                     cmpComponents.Import sImportFilePath
+                    Call WriteLineToSystemLog("UpdateCodeInModule", "Add new module from file:= " & sImportFilePath, "-")
                 End If
                 
             Case Else
@@ -219,7 +237,11 @@ Private Sub UpdateCodeInModule(cmpComponents As VBComponents, sImportFilePath As
     Next f
     
     Set fso = Nothing
-    
+Exit Sub
+Failed:
+    Set fso = Nothing
+    Call WriteLineToSystemLog("UpdateCodeInModule", "Error on importing. Last status ='" & sStatus & ".'" & vbCrLf & "Module Name:= " & cmpModule.Name & ". File Name:= " & f.Name, _
+                        "Error " & Err.Number & " in " & Err.Source & ". " & Err.Description)
 End Sub
 
 

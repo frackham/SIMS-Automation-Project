@@ -129,9 +129,11 @@ Private Sub Class_Initialize()
 
 End Sub
 Sub Setup(CMD As CommandLineHandler, sys As FraSys)
-    thisCMD = CMD
-    thissys = sys
+    Set thisCMD = CMD
+    Set thissys = sys
 End Sub
+
+
 
 
 

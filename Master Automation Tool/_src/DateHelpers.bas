@@ -19,3 +19,8 @@ Public Function GetIsCheckDateBeforeDate(dDateToCheck As Date, dComparisonDate A
 End Function
 
 
+
+
+Public Function TimeStampNow() As Date
+    TimeStampNow = Now
+End Function
