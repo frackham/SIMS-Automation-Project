@@ -29,7 +29,7 @@ Dim str_mailersmtp As String
 
 Dim bool_debugmode As Boolean
 
-'REFACTOR: Move all references to CMD out, and have each function return a test value if it does not exist. 
+
 
 Private Sub Class_Initialize()
     'Set as blank values on initialise

@@ -10,9 +10,9 @@ Option Private Module
 
 '@TestModule
 '' uncomment for late-binding:
-'Private Assert As Object
+Private Assert As Object
 '' early-binding requires reference to Rubberduck.UnitTesting.tlb:
-Private Assert As New Rubberduck.AssertClass
+'Private Assert As New Rubberduck.AssertClass
 
 '@ModuleInitialize
 Public Sub ModuleInitialize()
@@ -46,7 +46,7 @@ Public Sub TestMethod1() 'TODO: Rename test
     'Act:
 
     'Assert:
-    Assert.Inconclusive
+    'Assert.Inconclusive
 
 TestExit:
     Exit Sub

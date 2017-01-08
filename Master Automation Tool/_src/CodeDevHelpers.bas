@@ -15,6 +15,7 @@ Public Function CheckWhetherToImportSRCModules() As Boolean
     dThisWorkbookUpdated = TimeStampThisLastModified()
 
     'for each .bas or .cls in SRC folder.
+    CheckWhetherToImportSRCModules = False
     Set fo = fso.GetFolder(ThisWorkbook.path & "\" & "_src") 'TODO: Replace with path variable.
     For Each f In fo.Files
         Select Case UCase(Trim(Replace(Right(f.ShortName, 4), ".", "")))
@@ -22,7 +23,7 @@ Public Function CheckWhetherToImportSRCModules() As Boolean
                 dFileUpdated = f.DateLastModified
                 If GetIsCheckDateBeforeDate(dThisWorkbookUpdated, dFileUpdated) Then 'if this file has been updated since the workbook, update the modules.
                     CheckWhetherToImportSRCModules = True
-                    Call WriteLineToSystemLog("CheckWhetherToImportSRCModules", "-", "True, importing")
+                    'Call WriteLineToSystemLog("CheckWhetherToImportSRCModules", "-", "True, importing")
                     Exit For
                 End If
             Case Else
@@ -30,10 +31,10 @@ Public Function CheckWhetherToImportSRCModules() As Boolean
         End Select
     Next f
     Set fso = Nothing
-    If CheckWhetherToImportSRCModules Then
-        Call WriteLineToSystemLog("CheckWhetherToImportSRCModules", "-", "True, import ended")
+    If CheckWhetherToImportSRCModules = True Then
+        Call WriteLineToSystemLog("CheckWhetherToImportSRCModules", "-", "True, should import.")
     Else
-        Call WriteLineToSystemLog("CheckWhetherToImportSRCModules", "-", "False, no import made.")
+        Call WriteLineToSystemLog("CheckWhetherToImportSRCModules", "-", "False, do not import.")
     End If
 End Function
 

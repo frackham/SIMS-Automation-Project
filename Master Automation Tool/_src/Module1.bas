@@ -45,8 +45,8 @@ Sub auto_open(Optional bRanFromFirstOpen As Boolean = True)
     If MessageQueue Is Nothing Then
         Set MessageQueue = New QueueManager
     End If
-    Call CMD.Initialise_WithSystemRef(System)
-    Call MessageQueue.Setup(CMD, System)
+'    Call CMD.Initialise_WithSystemRef(System)
+'    Call MessageQueue.Setup(CMD, System)
 
 
 
