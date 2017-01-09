@@ -10,6 +10,9 @@ Attribute VB_Exposed = False
 
 Option Explicit
 'QueueItem.
+'Generic class for any actions needing to go into the queue.
+
+
 
 Public sInternalName As String
 Public sReportName As String
