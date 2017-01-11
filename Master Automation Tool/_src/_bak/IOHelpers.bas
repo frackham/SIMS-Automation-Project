@@ -25,17 +25,14 @@ Function IsFileUnavailable(filename As String)
         ' File is already opened by another user.
         Case 70
             IsFileUnavailable = True
-
-
+    
+        'Network Error.
+        Case 35012
+            IsFileUnavailable = True
+            
         ' Error number for "File doesn't exist."
         ' File can't be found.
         Case 53
-            IsFileUnavailable = False
-
-
-        ' Error number for "Network unavailable/connection lost."
-        ' Probably going to get a crash anyway at this point!.
-        Case 35012
             IsFileUnavailable = False
 
         ' Another error occurred.

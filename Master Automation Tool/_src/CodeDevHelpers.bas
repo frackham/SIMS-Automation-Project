@@ -258,8 +258,10 @@ Private Sub UpdateCodeInModule(cmpComponents As VBComponents, sImportFilePath As
                             Call WriteLineToSystemLog("UpdateCodeInModule", "Module:= " & cmpModule.Name & ". Deleting code...", "-")
                             cmpModule.CodeModule.DeleteLines 1, cmpModule.CodeModule.CountOfLines 'Don't remove unless got something to add in!
                             Call WriteLineToSystemLog("UpdateCodeInModule", "Module:= " & cmpModule.Name & ". Deleted code and updating module from file...", "-")
+                            Application.Wait (Now + TimeValue("0:00:1")) '1s
                             cmpModule.CodeModule.AddFromString (sCode)
                             Call WriteLineToSystemLog("UpdateCodeInModule", "Module:= " & cmpModule.Name & ". Deleted code and updated module from file", "-")
+                            Application.Wait (Now + TimeValue("0:00:1")) '1s
                         End If
                     End If
                 ElseIf bModuleExists = False Then
@@ -267,6 +269,7 @@ Private Sub UpdateCodeInModule(cmpComponents As VBComponents, sImportFilePath As
                     Call WriteLineToSystemLog("UpdateCodeInModule", "Adding new module from file:= " & sImportFilePath, "-")
                     cmpComponents.Import sImportFilePath
                     Call WriteLineToSystemLog("UpdateCodeInModule", "Added new module from file:= " & sImportFilePath, "-")
+                    Application.Wait (Now + TimeValue("0:00:1")) '1s
                 End If
                 
             Case Else
