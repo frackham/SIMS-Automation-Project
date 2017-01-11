@@ -2,6 +2,7 @@ Attribute VB_Name = "DateHelpers"
 
 Option Explicit
 
+'TODO: Add test using literals. i.e. test that 1/1/1900 is before comparison date (now).
 
 Public Sub TimeStampThisLastModified_Update()
     'Sets the last modifed date of this workbook.
