@@ -2,7 +2,7 @@ Attribute VB_Name = "IOHelpers"
 Option Explicit
 
   
-Function IsFileOpen(filename As String)
+Function IsFileUnavailable(filename As String)
     Dim filenum As Integer, errnum As Integer
 
     On Error Resume Next   ' Turn error checking off.
@@ -19,17 +19,25 @@ Function IsFileOpen(filename As String)
         ' No error occurred.
         ' File is NOT already open by another user.
         Case 0
-         IsFileOpen = False
+         IsFileUnavailable = False
 
         ' Error number for "Permission Denied."
         ' File is already opened by another user.
         Case 70
-            IsFileOpen = True
+            IsFileUnavailable = True
+
+
+        ' Error number for "File doesn't exist."
+        ' File can't be found.
+        Case 53
+            IsFileUnavailable = False
 
         ' Another error occurred.
         Case Else
-            Error errnum
+            'Error errnum
+            IsFileUnavailable = True
             If DEBUG_MODE Then MsgBox (errnum & ", " & Err.Description)
+            Call WriteLineToSystemLog("IsFileUnavailable", "Unknown error on checking file availability for " & filename & ". Err number: " & errnum & ", " & Err.Description, "-")
     End Select
 
     

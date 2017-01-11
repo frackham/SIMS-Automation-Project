@@ -2,7 +2,10 @@ Attribute VB_Name = "DebugHelpers"
 
 Option Explicit
 'None of the functions here should be run by code - only manually. They are to support development.
-
+Private Sub ResetEvents()
+    Application.DisplayAlerts = True
+    Application.EnableEvents = True
+End Sub
 Private Sub UnhideAllSheets()
     Dim ws As Worksheet
     
