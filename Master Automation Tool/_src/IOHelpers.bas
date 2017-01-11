@@ -2,6 +2,8 @@ Attribute VB_Name = "IOHelpers"
 Option Explicit
 
   
+  'TODO: Add unit tests. For example, this file should always return 70, shouldn't it?
+  
 Function IsFileUnavailable(filename As String)
     Dim filenum As Integer, errnum As Integer
 
