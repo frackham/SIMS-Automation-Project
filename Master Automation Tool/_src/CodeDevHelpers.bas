@@ -260,6 +260,14 @@ Private Sub UpdateCodeInModule(cmpComponents As VBComponents, sImportFilePath As
                             Call WriteLineToSystemLog("UpdateCodeInModule", "Module:= " & cmpModule.Name & ". Deleted code and updating module from file...", "-")
                             Application.Wait (Now + TimeValue("0:00:1")) '1s
                             cmpModule.CodeModule.AddFromString (sCode)
+                            
+                            'Check if the last line in the codemodule is ().
+                            
+                            While cmpModule.CodeModule.Lines(cmpModule.CodeModule.CountOfLines, cmpModule.CodeModule.CountOfLines) = "()"
+                                
+                                cmpModule.CodeModule.DeleteLines cmpModule.CodeModule.CountOfLines, cmpModule.CodeModule.CountOfLines 'Delete last line only.
+                            Wend
+                                                  
                             Call WriteLineToSystemLog("UpdateCodeInModule", "Module:= " & cmpModule.Name & ". Deleted code and updated module from file", "-")
                             Application.Wait (Now + TimeValue("0:00:1")) '1s
                         End If

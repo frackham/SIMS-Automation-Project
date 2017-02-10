@@ -105,7 +105,7 @@ Public Sub ExportModules(Optional bForceExportWithoutFileCheck As Boolean = Fals
                     cmpComponent.Export szExportPath & szFileName
                     'Note that codedevhelpers module
             Else
-                If IsFileOpen(szExportPath & szFileName) Then
+                If IsFileUnavailable(szExportPath & szFileName) Then
                     x = x + 1
                     'failed to open a file. Skip it.
                     'TODO: Export using a generated name that is free instead, include the originally desired filename in it, so we can get hold of this if needed and no files are lost.
@@ -129,7 +129,7 @@ Public Sub ExportModules(Optional bForceExportWithoutFileCheck As Boolean = Fals
         Call WriteLineToSystemLog("ExportModules", "-", CStr(n) & " files exported to " & FolderWithVBAProjectFiles & " .")
     Else
         ''x' failed exports.
-        Call WriteLineToSystemLog("ExportModules", "-", CStr(x) & " files failed to export, " & CStr(n) & " files exported to " & FolderWithVBAProjectFiles & " .")
+        Call WriteLineToSystemLog("ExportModules", "-", CStr(n) & " files exported, " & CStr(x) & " files failed to export to " & FolderWithVBAProjectFiles & " .")
     End If
 End Sub
 
@@ -189,7 +189,7 @@ Public Sub ImportModules()
     x = 0
     For Each objFile In objFSO.GetFolder(szImportPath).Files
     
-        If IsFileOpen(objFile.path) = False Then
+        If IsFileUnavailable(objFile.path) = False Then
         
             If (objFSO.GetExtensionName(objFile.Name) = "cls") Or _
                 (objFSO.GetExtensionName(objFile.Name) = "frm") Or _
@@ -197,9 +197,9 @@ Public Sub ImportModules()
                 
                 'cmpComponents.Import objFile.path
                 n = n + 1
-                If DEBUG_MODE Then Call WriteLineToSystemLog("ImportModules", "Attempting to update code for module:=" & objFile.Name, "-")
+                Call WriteLineToSystemLog("ImportModules", "Module:= " & objFile.Name & ". Intending on update code from file.", "-")
                 Call UpdateCodeInModule(cmpComponents, objFile.path)
-                    
+                Call WriteLineToSystemLog("ImportModules", "Module:= " & objFile.Name & ". Done with file.", "-")
             End If
         Else
             'couldn't import.
@@ -239,9 +239,7 @@ Private Sub UpdateCodeInModule(cmpComponents As VBComponents, sImportFilePath As
 '                       'We do nothing
                     Else
                         sThisModuleName = UCase(cmpModule.Name)
-                        
                         If sThisFileName = sThisModuleName Then
-                            'UPDATE
                             bModuleExists = True
                             Exit For
                         End If
@@ -257,15 +255,29 @@ Private Sub UpdateCodeInModule(cmpComponents As VBComponents, sImportFilePath As
                     Else
                         sCode = GetCodeFromFile_BASorCLS(f.path)
                         If Len(sCode) > 0 Then
+                            Call WriteLineToSystemLog("UpdateCodeInModule", "Module:= " & cmpModule.Name & ". Deleting code...", "-")
                             cmpModule.CodeModule.DeleteLines 1, cmpModule.CodeModule.CountOfLines 'Don't remove unless got something to add in!
+                            Call WriteLineToSystemLog("UpdateCodeInModule", "Module:= " & cmpModule.Name & ". Deleted code and updating module from file...", "-")
+                            Application.Wait (Now + TimeValue("0:00:1")) '1s
                             cmpModule.CodeModule.AddFromString (sCode)
+                            
+                            'Check if the last line in the codemodule is ().
+                            
+                            While cmpModule.CodeModule.Lines(cmpModule.CodeModule.CountOfLines, cmpModule.CodeModule.CountOfLines) = "()"
+                                cmpModule.CodeModule.DeleteLines cmpModule.CodeModule.CountOfLines, cmpModule.CodeModule.CountOfLines 'Delete last line only.
+                            Wend
+                            
+                            
                             Call WriteLineToSystemLog("UpdateCodeInModule", "Module:= " & cmpModule.Name & ". Deleted code and updated module from file", "-")
+                            Application.Wait (Now + TimeValue("0:00:1")) '1s
                         End If
                     End If
                 ElseIf bModuleExists = False Then
                     'if it doesn't exist, import
+                    Call WriteLineToSystemLog("UpdateCodeInModule", "Adding new module from file:= " & sImportFilePath, "-")
                     cmpComponents.Import sImportFilePath
-                    Call WriteLineToSystemLog("UpdateCodeInModule", "Add new module from file:= " & sImportFilePath, "-")
+                    Call WriteLineToSystemLog("UpdateCodeInModule", "Added new module from file:= " & sImportFilePath, "-")
+                    Application.Wait (Now + TimeValue("0:00:1")) '1s
                 End If
                 
             Case Else

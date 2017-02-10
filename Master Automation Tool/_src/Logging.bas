@@ -4,9 +4,8 @@ Option Explicit
 
 
     'ID  DateStamp   Intended Outcome    Log Value
-
     'TODO: Create message log function.
-    
+    'TODO: Add logging levels.
     
 
 Sub DemoSystemLog()
